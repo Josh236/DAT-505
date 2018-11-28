@@ -20,16 +20,18 @@
         'use strict';
 
         Physijs.scripts.worker = 'build/physijs_worker.js';
-        Physijs.scripts.ammo = 'build/ammo.js';
+        Physijs.scripts.ammo = 'ammo.js';
 
-        var initScene, render, renderer, scene, camera, box, box1, light1, light2;
+        // Ammo.then(( )=> console.log('ammo is here'))
+
+        var initScene, render, renderer, scene, camera, box, box1, light1, light2, controls;
 
         initScene = function() {
           renderer = new THREE.WebGLRenderer({ antialias: true });
           renderer.setSize( window.innerWidth, window.innerHeight );
           document.getElementById( 'viewport' ).appendChild( renderer.domElement );
 
-          scene = new Physijs.Scene({ reportsize: 50, fixedTimeStep: 1 / 60 });
+          scene = new Physijs.Scene();
 
           scene.setGravity(new THREE.Vector3( 0, -10, 0 ));
 
@@ -39,10 +41,22 @@
             1,
             1000
           );
+
           camera.position.set(60, 50, 60);
           camera.lookAt(scene.position);
           scene.add(camera);
 
+        //  controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+          // controls.update();
+          //
+          //
+          // controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+          // controls.dampingFactor = 0.25;
+          // controls.screenSpacePanning = false;
+          // controls.minDistance = 100;
+          // controls.maxDistance = 500;
+          // controls.maxPolarAngle = Math.PI / 2;
 
 
           var light1 = new THREE.AmbientLight(0x0000ff, 0.5);
@@ -71,6 +85,7 @@
 
         render = function() {
           scene.simulate();
+          //controls.update();
           renderer.render( scene, camera);
           requestAnimationFrame( render );
         };
