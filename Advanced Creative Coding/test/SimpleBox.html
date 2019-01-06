@@ -30,15 +30,22 @@
 		<script src="js/three.js"></script>
 		<script type="text/javascript" src="js/physi.js"></script>
 		<script src="js/controls/OrbitControls.js"></script>
+		<script src="js/stats.min.js"></script>
 
 		<script>
+
+		var stats = new Stats();
+		stats.showPanel( 0 );
+		document.body.appendChild( stats.dom );
+
+
 
 		 'use strict';
 
 			Physijs.scripts.worker = 'js/physijs_worker.js';
 			Physijs.scripts.ammo = 'ammo.js';
 
-			var initScene, render, renderer, scene, camera, box, floor;
+			var initScene, render, renderer, scene, camera, box, floor, building1;
 
 			var container;
 
@@ -70,12 +77,12 @@
 				// scene
 
 				//scene = new THREE.Scene();
-				scene = new Physijs.Scene;
+				scene = new Physijs.Scene({fixedTimeStep: 1 / 60});
 				scene.setGravity(new THREE.Vector3( 0, -10, 0 ));
 
 				//floor
 				floor = new Physijs.BoxMesh(
-					new THREE.CubeGeometry( 20, 0.1, 20 ),
+					new THREE.CubeGeometry( 100, 0.1, 100 ),
 					new THREE.MeshPhongMaterial({ color:0xffffff}),
 					0 //mass
 				);
@@ -88,11 +95,20 @@
 				// Box
 				box = new Physijs.BoxMesh(
 					new THREE.CubeGeometry( 1, 1, 1 ),
-					new THREE.MeshPhongMaterial({ color:0xffffff})
+					new THREE.MeshPhongMaterial({ color:0x7a7a7a}), 1
 				);
 				box.position.y = 10;
 				scene.add( box );
 				box.castShadow = true;
+
+				building1 = new Physijs.BoxMesh(
+					new THREE.CubeGeometry( 10, 10, 10),
+					new THREE.MeshPhongMaterial({color:0x7a7a7a}), 1
+				);
+				building1.position.x = 10;
+				building1.position.y = 5
+				scene.add(building1);
+				building1.castShadow = true;
 
 				var manager = new THREE.LoadingManager();
 				manager.onProgress = function ( item, loaded, total ) {
@@ -129,6 +145,7 @@
 
 				scene.add( light );
 
+
 					//
 
 				renderer = new THREE.WebGLRenderer();
@@ -162,10 +179,39 @@
 				mouseY = ( event.clientY - windowHalfY ) / 2;
 
 			}
+//movement
+stats.begin();
+
+			var xSpeed = 0.1;
+			var zSpeed = 0.1;
+
+			document.addEventListener("keydown", onDocumentKeyDown);
+			function onDocumentKeyDown(event) {
+					var keyCode = event.which;
+					if (keyCode == 87) { //console.log("pressed");
+							box.position.z -= zSpeed;
+					} else if (keyCode == 83) {
+							box.position.z += zSpeed;
+					} else if (keyCode == 65) {
+							box.position.x -= xSpeed;
+					} else if (keyCode == 68) {
+							box.position.x += xSpeed;
+					}
+					render();
+					scene.add(box);
+				};
+
+
+
 
 			//
 
+
+
 			function animate() {
+
+				//stats.begin();
+		stats.end();
 
 				requestAnimationFrame( animate );
 				render();
