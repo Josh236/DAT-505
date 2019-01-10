@@ -3,6 +3,8 @@ noise.seed(Math.random());
 var stats = new Stats();
 stats.showPanel(1);
 
+var scene;
+
 'use strict';
 
  Physijs.scripts.worker = 'js/physijs_worker.js';

@@ -1,7 +1,7 @@
 if ( ! THREE.OBJLoader2 ) { THREE.OBJLoader2 = {} }
 if ( ! THREE.MeshTransfer || ! THREE.MeshTransfer.MeshReceiver || ! THREE.MeshTransfer.MeshTransmitter || ! THREE.MeshTransfer.Validator ) {
 
-	console.error( '"THREE.MeshTransfer" is not available, but "THREE.OBJLoader2" requires it. Please include "MeshTransfer.js" in your HTML.' );
+	//console.error( '"THREE.MeshTransfer" is not available, but "THREE.OBJLoader2" requires it. Please include "MeshTransfer.js" in your HTML.' );
 
 }
 
