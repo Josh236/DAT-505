@@ -1,94 +1,96 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset=utf-8>
-		<title>Procedural City</title>
-		<style>
-			body { margin: 0; overflow: hidden; background-color: black;}
-			canvas { width: 100%; height: 100% }
+<html lang="en" >
+  <head>
+    <meta charset="UTF-8" />
+    <title>Three.js</title>
+      <!--  Simple reset to delete the margins  -->
+      <style>
+        body { margin: 0; }
+        canvas { width: 100%; height: 100% }
+      </style>
+      <!--  Three.js CDN  -->
+      <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js"></script>-->
+      <script src="build/three.min.js"></script>
+      <script src="build/physi.js"></script>
+  </head>
+  <body>
+          <div id="viewport"></div>
+    <script type="text/javascript">
 
-			#brandTag
-			{
-				position: fixed;
-				display: block;
-				top: 0px;
-				left: 30px;
-				color: white;
-				background-color: rgba(50, 50, 50, 0.5);
-				z-index: 1000;
-				text-align: center;
-				padding: 12px 12px 12px 12px;
-				font-size: 18px;
-				font-family: "Helvetica", sans-serif;
-				transition-property: color, background-color, padding;
-				transition-duration: 0.3s;
-			}
+        'use strict';
 
-			#brandTag:hover
-			{
-				color: black;
-				background-color: white;
-				padding: 24px 12px 12px 12px;
-			}
+        Physijs.scripts.worker = 'build/physijs_worker.js';
+        Physijs.scripts.ammo = 'ammo.js';
 
-			#controls {
-				z-index: 2000;
-				display: block;
-				position: fixed;
-				top: 12px;
-				right: 12px;
-				color: white;
-				background-color: rgba(50, 50, 50, 0.5);
-				padding: 12px 12px 12px 12px;
-				font-size: 14px;
-				font-family: "Helvetica", sans-serif;
-				line-height: 24px;
-			}
+        // Ammo.then(( )=> console.log('ammo is here'))
 
-			#controlsHeader {
-				font-size: 18px;
-				margin-bottom: 6px;
-			}
+        var initScene, render, renderer, scene, camera, box, box1, light1, light2, controls;
 
-			hr {
-				height: 1px;
-				background-color: rgba(100, 100, 100, 1.0);
-				border: none;
-			}
+        initScene = function() {
+          renderer = new THREE.WebGLRenderer({ antialias: true });
+          renderer.setSize( window.innerWidth, window.innerHeight );
+          document.getElementById( 'viewport' ).appendChild( renderer.domElement );
 
+          scene = new Physijs.Scene();
 
-		</style>
-	</head>
-	<body>
+          scene.setGravity(new THREE.Vector3( 0, -10, 0 ));
 
-		<a href="http://www.colordodge.com">
-			<div id="brandTag">Colordodge</div>
-		</a>
+          camera = new THREE.PerspectiveCamera(
+            35,
+            window.innerWidth / window.innerHeight,
+            1,
+            1000
+          );
 
-		<div id="controls">
-			<div id="controlsHeader">Controls</div>
-			<hr>
-			W A S D : Speed, Yaw</br>
-			↑ ↓ ← → : Pitch, Roll</br>
-			MOUSE : Camera</br>
-			R : Reset Camera</br>
-			SPACE : Pause</br>
-			C : Capture Screen</br>
-			H : Hide Controls
-		</div>
+          camera.position.set(60, 50, 60);
+          camera.lookAt(scene.position);
+          scene.add(camera);
 
-		<script src="js/three.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
-		<script src="js/controls/OrbitControls.js"></script>
-		<script src="js/dat.gui.min.js"></script>
-		<script src="js/stats.min.js"></script>
-		<script src="js/THREE.TargetCamera.js"></script>
-		<script src="js/Building.js"></script>
-		<script src="js/ThreeCSG.js"></script>
-		<script src="js/perlin.js"></script>
+        //  controls = new THREE.OrbitControls( camera, renderer.domElement );
 
-		<script src="buildingtest.js"></script>
+          // controls.update();
+          //
+          //
+          // controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+          // controls.dampingFactor = 0.25;
+          // controls.screenSpacePanning = false;
+          // controls.minDistance = 100;
+          // controls.maxDistance = 500;
+          // controls.maxPolarAngle = Math.PI / 2;
 
 
-	</body>
+          var light1 = new THREE.AmbientLight(0x0000ff, 0.5);
+          scene.add(light1);
+
+          var light2 = new THREE.DirectionalLight(0x0000ff, 0.5);
+          scene.add(light2);
+
+
+          box = new Physijs.BoxMesh(
+                new THREE.CubeGeometry(5, 5, 5),
+                new THREE.MeshLambertMaterial({ color: 0x888888})
+          );
+          scene.add(box);
+
+          box1 = new Physijs.BoxMesh(
+                 new THREE.CubeGeometry(50, 2, 50),
+                 new THREE.MeshBasicMaterial({ color: 0x888888})
+
+          );
+          box1.position.y = -20
+          scene.add(box1);
+
+          requestAnimationFrame(render);
+        };
+
+        render = function() {
+          scene.simulate();
+          //controls.update();
+          renderer.render( scene, camera);
+          requestAnimationFrame( render );
+        };
+        window.onload = initScene();
+
+        </script>
+  </body>
 </html>
